@@ -1,0 +1,37 @@
+[
+  {
+    "id": "arxiv_cs_ai",
+    "name": "arXiv cs.AI 近期列表",
+    "url": "https://arxiv.org/list/cs.AI/recent",
+    "fields": ["title", "authors"],
+    "min_items": 10
+  },
+  {
+    "id": "arxiv_cs_cl",
+    "name": "arXiv cs.CL 近期列表",
+    "url": "https://arxiv.org/list/cs.CL/recent",
+    "fields": ["title", "authors"],
+    "min_items": 10
+  },
+  {
+    "id": "arxiv_cs_lg",
+    "name": "arXiv cs.LG 近期列表",
+    "url": "https://arxiv.org/list/cs.LG/recent",
+    "fields": ["title", "authors"],
+    "min_items": 10
+  },
+  {
+    "id": "arxiv_stat_ml",
+    "name": "arXiv stat.ML 近期列表",
+    "url": "https://arxiv.org/list/stat.ML/recent",
+    "fields": ["title", "authors"],
+    "min_items": 10
+  },
+  {
+    "id": "arxiv_cs_cv",
+    "name": "arXiv cs.CV 近期列表",
+    "url": "https://arxiv.org/list/cs.CV/recent",
+    "fields": ["title", "authors"],
+    "min_items": 10
+  }
+]

@@ -1,0 +1,10 @@
+# 核心（browser-use 0.13.x 走 CDP，无 langchain/playwright 依赖）
+browser-use==0.13.10
+openai==2.26.0
+python-dotenv==1.2.2
+pydantic==2.13.5
+
+# 服务化
+fastapi==0.141.1
+uvicorn==0.52.4
+streamlit==1.63.0

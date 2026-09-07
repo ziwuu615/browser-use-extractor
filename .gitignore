@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+.env.local
+browser_data/
+output/
+*.log
+.DS_Store
