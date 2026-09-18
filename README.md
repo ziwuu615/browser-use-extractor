@@ -29,6 +29,7 @@
   - `mediacrawler` 平台适配器：读 [MediaCrawler](https://github.com/NanmiCoder/MediaCrawler) 等工具导出的 CSV/JSON/JSONL，按列映射归一化。
 - **批量任务 + 落库**：`python -m app.collect run -m manifest.json`，并发执行、SQLite 去重持久化。
 - **成本可观测**：每次任务记录步数 / 耗时 / token。
+- **洞察报告**：采集完自动生成「竞品威胁评估 + 市场反馈摘要」，直接输出业务结论（`python -m app.insight`）。
 - **四入口**：CLI（单条 + 批量）/ FastAPI / Streamlit / MCP。
 - **Docker 化**。
 
@@ -258,10 +259,13 @@ browser_use/
 │   ├── ui.py                # Streamlit
 │   ├── mcp_server.py        # MCP server
 │   ├── golden.py            # 金标准评测（准确率/召回/F1 模糊匹配）
+│   ├── insight.py           # 洞察层（竞品威胁评估 + 市场反馈摘要）
 │   └── eval.py              # 评测
 ├── examples/
 │   ├── manifest.example.json          # 批量任务清单示例
-│   └── mediacrawler_xhs_sample.json   # 平台数据样例（适配器自测用）
+│   ├── mediacrawler_xhs_sample.json   # 平台数据样例（适配器自测用）
+│   ├── insight_products.json          # 洞察层样例：竞品数据
+│   └── feedback_comments.json         # 洞察层样例：口碑评论
 ├── benchmark/web_tasks.json    # 企业级评测集（21 任务 + validator）
 ├── benchmark/golden_tasks.json # 金标准评测集（ground truth）
 ├── benchmark/fixtures/         # 本地 HTML 快照（金标准 fixture）

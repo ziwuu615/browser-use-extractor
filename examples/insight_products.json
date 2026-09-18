@@ -1,0 +1,9 @@
+{
+  "items": [
+    {"title": "AirPods Pro 2", "price": "¥1899", "rating": "4.8"},
+    {"title": "华为 FreeBuds Pro 3", "price": "¥999", "rating": "4.7"},
+    {"title": "小米 Buds 4 Pro", "price": "¥699", "rating": "4.5"},
+    {"title": "声阔 Liberty 4 NC", "price": "¥449", "rating": "4.6"},
+    {"title": "漫步者 NeoBuds Pro 2", "price": "¥399", "rating": "4.3"}
+  ]
+}
