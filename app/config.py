@@ -114,3 +114,13 @@ def max_concurrency() -> int:
         return max(1, int(os.getenv("MAX_CONCURRENCY", "3")))
     except ValueError:
         return 3
+
+
+def store_path() -> str:
+    """SQLite 落库路径（采集结果持久化、去重，沉淀成数据资产）。"""
+    return os.getenv("STORE_PATH", "data/store.sqlite")
+
+
+def api_key() -> str | None:
+    """服务鉴权 Key；留空则不启用鉴权。"""
+    return os.getenv("API_KEY") or None

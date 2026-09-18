@@ -1,0 +1,14 @@
+{
+  "tasks": [
+    {
+      "url": "https://www.amazon.com/s?k=wireless+earbuds",
+      "fields": ["title", "price", "rating"],
+      "goal": "提取商品列表的名称、价格与评分"
+    },
+    {
+      "platform": "xhs",
+      "file": "examples/mediacrawler_xhs_sample.json",
+      "item_type": "note"
+    }
+  ]
+}
