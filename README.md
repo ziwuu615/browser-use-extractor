@@ -214,15 +214,24 @@ python -m app.eval --report eval_report.json   # 输出 JSON 报告
 python -m app.eval --benchmark benchmark/golden_tasks.json   # 金标准评测（本地 fixture，不依赖线上站点）
 ```
 
-实测（DeepSeek deepseek-chat，DOM 文本模式，学术类 arXiv 列表页）：
+实测（DeepSeek deepseek-chat，DOM 文本模式，2026-09）：
+
+**学术类 arXiv（6 任务，真实站点）：**
 
 | 指标 | 数值 |
 |------|------|
-| 成功率 | 5/5 = **100%** |
-| 字段完整率 | 100% |
-| 平均步数 | 4.4 |
-| 平均耗时 | 45.0s |
-| 平均 token | ~82k / 任务 |
+| 成功率 | 6/6 = **100%** |
+| 平均步数 | 2.8 |
+| 平均耗时 | 16.6s（P95 19.4s） |
+| 平均 token | ~46k / 任务（每任务抽满 50 篇论文） |
+
+**金标准（本地 fixture，2 任务）：**
+
+| 指标 | 数值 |
+|------|------|
+| 通过率 | 2/2 = **100%** |
+| 字段准确率 | **100%** |
+| 召回率 / 精确率 / F1 | 1.0 / 1.0 / 1.0 |
 
 ---
 
