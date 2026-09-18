@@ -1,0 +1,51 @@
+{
+  "name": "金标准（ground truth）评测集",
+  "version": 1,
+  "description": "基于「冻结 HTML 快照 + 人工标注真值」的离线评测：比对提取值与期望值，算字段准确率 / 条目召回率 / 精确率 / F1。fixture 在 benchmark/fixtures/，可重复、可 CI 回归。",
+  "tasks": [
+    {
+      "id": "golden_products",
+      "name": "商品列表（金标准）",
+      "category": "金标准",
+      "url": "benchmark/fixtures/products.html",
+      "fields": ["title", "price", "rating"],
+      "min_items": 3,
+      "validators": {
+        "title": {"type": "non_empty"},
+        "price": {"type": "regex", "pattern": "\\d+(\\.\\d{1,2})?"},
+        "rating": {"type": "range", "min": 0, "max": 5}
+      },
+      "golden": {
+        "match_field": "title",
+        "fields": ["title", "price", "rating"],
+        "items": [
+          {"title": "Apple AirPods Pro 2", "price": "$249.00", "rating": "4.8"},
+          {"title": "Sony WH-1000XM5", "price": "$349.99", "rating": "4.7"},
+          {"title": "Sennheiser Momentum 4", "price": "$299.95", "rating": "4.6"}
+        ]
+      }
+    },
+    {
+      "id": "golden_jobs",
+      "name": "招聘岗位列表（金标准）",
+      "category": "金标准",
+      "url": "benchmark/fixtures/jobs.html",
+      "fields": ["title", "salary", "company"],
+      "min_items": 3,
+      "validators": {
+        "title": {"type": "non_empty"},
+        "salary": {"type": "regex", "pattern": "\\d+[kK]"},
+        "company": {"type": "non_empty"}
+      },
+      "golden": {
+        "match_field": "title",
+        "fields": ["title", "salary", "company"],
+        "items": [
+          {"title": "Python 后端工程师", "salary": "25k-40k", "company": "字节跳动"},
+          {"title": "Go 服务端开发", "salary": "30k-50k", "company": "腾讯"},
+          {"title": "Java 资深开发工程师", "salary": "35k-55k", "company": "阿里巴巴"}
+        ]
+      }
+    }
+  ]
+}

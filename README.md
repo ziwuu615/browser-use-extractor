@@ -163,14 +163,18 @@ python -m app.cli "URL" --fields title,price --vision    # 需 QWEN_API_KEY 或 
 
 ## 反爬与合规
 
-Computer Use 方式本身具备天然的反爬优势：控制真实浏览器、带真实指纹、执行 JS，大量针对「脚本请求」的前端反爬对它无效。剩余的分层处理：
+Computer Use 方式本身具备天然的反爬优势：控制真实浏览器、带真实指纹、执行 JS，大量针对「脚本请求」的前端反爬对它无效。其余反爬按**分层治理**落地：
 
-- **并发限流**（已做）：`MAX_CONCURRENCY` 信号量限制并发浏览器实例。
-- **IP 代理池**（待做）：单 IP 高频访问仍可能被限流。
-- **行为拟人化**（待做）：随机操作节奏、模拟鼠标轨迹。
-- **验证码边界**：视觉模式可处理识别型验证码；滑块 / reCAPTCHA 基本无解，承认边界、换数据源而非硬破。
+| 层 | 状态 | 实现 |
+|----|------|------|
+| robots.txt 合规 | ✅ | 采集前自动检查 `robots.txt`，被禁止则跳过（`app/robots.py`，`ROBOTS_CHECK` 开关） |
+| 并发限流 | ✅ | `MAX_CONCURRENCY` 信号量限制并发浏览器实例 |
+| 域名限流 | ✅ | 同域名两次采集保持最小间隔（`app/humanize.py`，`RATE_LIMIT_INTERVAL`） |
+| IP 代理池 | ✅ | 多代理轮换（`app/proxy.py`，`PROXY` / `PROXY_POOL` / `PROXY_FILE`） |
+| 行为拟人化 | ✅ | 动作间随机延迟 + 可选自定义 UA（`app/humanize.py`，`HUMANIZE`） |
+| 验证码/强对抗 | 🚫 边界 | 识别型验证码用视觉模式；滑块 / reCAPTCHA 不硬破，换数据源 |
 
-合规原则：只采集公开数据、遵守 robots.txt 与站点条款、控制采集频率。
+合规原则：只采集公开数据、遵守 robots.txt 与站点条款、控制采集频率；强对抗商业站点用合规数据源（平台适配层或合规 API）接入。
 
 ---
 
@@ -204,6 +208,12 @@ python -m app.eval --report eval_report.json   # 输出 JSON 报告
 
 > 学术（arXiv）/ 社区（HN、维基百科）类为低反爬站点，可直接实测；电商（亚马逊/京东/淘宝）/ 招聘（BOSS/拉勾）/ 房产（链家/贝壳）/ 本地生活（大众点评）/ 舆情（微博/知乎）类为业务模板——反爬较强，需接入企业数据源（或平台数据适配层 MediaCrawler）后运行，validator 规则即企业数据质量标准。
 
+**金标准（ground truth）评测**（`benchmark/golden_tasks.json`）：基于「冻结 HTML 快照 + 人工标注真值」的离线评测，比对提取值与期望值，算**字段准确率 / 条目召回率 / 精确率 / F1**（`app/golden.py` 模糊匹配引擎）。可离线、可重复、可 CI 回归。
+
+```bash
+python -m app.eval --benchmark benchmark/golden_tasks.json   # 金标准评测（本地 fixture，不依赖线上站点）
+```
+
 实测（DeepSeek deepseek-chat，DOM 文本模式，学术类 arXiv 列表页）：
 
 | 指标 | 数值 |
@@ -223,6 +233,9 @@ browser_use/
 ├── app/
 │   ├── config.py            # LLM（DeepSeek 文本 / Qwen-VL 视觉）+ 浏览器 + 落库配置
 │   ├── extractor.py         # browser-use 核心：动态 schema / 双模式 / 并发
+│   ├── proxy.py             # 反爬：IP 代理池（轮换）
+│   ├── robots.py            # 反爬：robots.txt 合规检查
+│   ├── humanize.py          # 反爬：行为拟人化 + 域名限流
 │   ├── sources/             # 数据源抽象层（双引擎）
 │   │   ├── base.py          #   DataSource / CollectedItem / CollectionRequest
 │   │   ├── browser_use.py   #   通用引擎
@@ -235,11 +248,14 @@ browser_use/
 │   ├── server.py            # FastAPI
 │   ├── ui.py                # Streamlit
 │   ├── mcp_server.py        # MCP server
+│   ├── golden.py            # 金标准评测（准确率/召回/F1 模糊匹配）
 │   └── eval.py              # 评测
 ├── examples/
 │   ├── manifest.example.json          # 批量任务清单示例
 │   └── mediacrawler_xhs_sample.json   # 平台数据样例（适配器自测用）
-├── benchmark/web_tasks.json  # 评测集
+├── benchmark/web_tasks.json    # 企业级评测集（21 任务 + validator）
+├── benchmark/golden_tasks.json # 金标准评测集（ground truth）
+├── benchmark/fixtures/         # 本地 HTML 快照（金标准 fixture）
 ├── .env.example / requirements.txt / Dockerfile
 └── README.md
 ```

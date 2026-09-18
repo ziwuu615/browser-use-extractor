@@ -20,6 +20,9 @@ from pydantic import BaseModel, create_model
 from browser_use import Agent, Browser
 
 from . import config
+from .humanize import DomainRateLimiter, action_delay, user_agent
+from .proxy import ProxyPool
+from .robots import can_fetch, robots_check_enabled
 
 
 @dataclass
@@ -112,6 +115,11 @@ def _get_semaphore() -> "asyncio.Semaphore":
     return _semaphore
 
 
+# 反爬：代理池 + 域名限流（模块级单例，进程内共享轮换/限流状态）
+_proxy_pool = ProxyPool()
+_rate_limiter = DomainRateLimiter()
+
+
 async def extract(
     url: str,
     goal: str = "",
@@ -136,10 +144,24 @@ async def extract(
         task = f"{goal or '提取页面核心信息'}。以 JSON 形式输出结果。"
 
     async with _get_semaphore():  # 并发上限：最多 MAX_CONCURRENCY 个浏览器实例同时跑
+        # 反爬层 1：robots.txt 合规检查（默认开启；被禁止则直接跳过）
+        if robots_check_enabled():
+            allowed, msg = can_fetch(url)
+            if not allowed:
+                return ExtractionResult(
+                    success=False, data=None, raw="",
+                    errors=[f"robots.txt 禁止抓取：{msg}"],
+                )
+        # 反爬层 2：同域名最小间隔限流（防高频触发 IP 封禁）
+        await _rate_limiter.wait_if_needed(url)
+
         browser = Browser(
             headless=config.headless() if headless is None else headless,
             executable_path=config.browser_executable(),
             enable_default_extensions=False,  # 关闭 uBlock 等扩展：默认会联网下载，国内连不上源会卡死启动
+            proxy=_proxy_pool.next(),                    # 反爬层 3：IP 代理池轮换（未配置则 None）
+            wait_between_actions=action_delay(),          # 反爬层 4：行为拟人化（动作间随机延迟）
+            user_agent=user_agent(),                      # 可选：自定义 UA（未配置用浏览器默认）
         )
         agent = Agent(
             task=task,
