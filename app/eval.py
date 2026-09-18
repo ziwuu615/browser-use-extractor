@@ -18,6 +18,7 @@
 """
 import argparse
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -34,9 +35,17 @@ def _force_utf8_stdout() -> None:
 
 
 def _resolve_url(url: str) -> str:
-    """相对路径/本地文件 → file:// URL（本地 HTML fixture 金标准评测用）。"""
+    """相对路径 → 可访问 URL：优先 FIXTURE_BASE（本地 HTTP 服务），否则 file://。
+
+    browser-use 会拦截 file:// 导航，所以本地 fixture 需用 HTTP 提供：
+        python -m http.server 8765   （项目根目录）
+        FIXTURE_BASE=http://127.0.0.1:8765
+    """
     if url.startswith(("http://", "https://", "file://")):
         return url
+    base = os.environ.get("FIXTURE_BASE")
+    if base:
+        return f"{base.rstrip('/')}/{url.lstrip('/')}"
     return Path(url).resolve().as_uri()
 
 
