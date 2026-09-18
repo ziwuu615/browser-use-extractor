@@ -30,6 +30,7 @@
 - **批量任务 + 落库**：`python -m app.collect run -m manifest.json`，并发执行、SQLite 去重持久化。
 - **成本可观测**：每次任务记录步数 / 耗时 / token。
 - **洞察报告**：采集完自动生成「竞品威胁评估 + 市场反馈摘要」，直接输出业务结论（`python -m app.insight`）。
+- **记忆管理**：历史采集落库，对比新采集自动检测价格/评分变化、新竞品、下架竞品（`app/trend.py`）。
 - **四入口**：CLI（单条 + 批量）/ FastAPI / Streamlit / MCP。
 - **Docker 化**。
 
@@ -260,6 +261,7 @@ browser_use/
 │   ├── mcp_server.py        # MCP server
 │   ├── golden.py            # 金标准评测（准确率/召回/F1 模糊匹配）
 │   ├── insight.py           # 洞察层（竞品威胁评估 + 市场反馈摘要）
+│   ├── trend.py             # 记忆管理（变化检测：价格/评分/新竞品/下架）
 │   └── eval.py              # 评测
 ├── examples/
 │   ├── manifest.example.json          # 批量任务清单示例

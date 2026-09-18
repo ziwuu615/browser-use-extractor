@@ -18,6 +18,7 @@ from . import config
 from .sources.base import CollectionRequest
 from .sources.router import route
 from .store import Store
+from .trend import detect_changes, summarize
 
 
 async def _run_one(task: dict, store: Store) -> dict:
@@ -32,6 +33,10 @@ async def _run_one(task: dict, store: Store) -> dict:
     )
     source = route(request)
     result = await source.collect(request)
+    # 记忆：对比历史落库，检测价格/评分变化、新竞品、下架
+    history = store.query(source=result.source, platform=result.platform, limit=100000)
+    changes = detect_changes(history, [it.data for it in result.items],
+                             id_field=task.get("id_field", "title"))
     store.save_run({
         "run_id": uuid.uuid4().hex,
         "source": result.source,
@@ -52,6 +57,8 @@ async def _run_one(task: dict, store: Store) -> dict:
         "n_items": len(result.items),
         "inserted": inserted,
         "errors": result.errors,
+        "changes": changes,
+        "changes_text": summarize(changes),
     }
 
 
