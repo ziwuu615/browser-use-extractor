@@ -191,14 +191,28 @@ Computer Use 方式本身具备天然的反爬优势：控制真实浏览器、�
 
 ## 评测
 
-内置结构校验评测集（`benchmark/web_tasks.json`）：校验「agent 成功 + 条目数达标 + 每条字段完整非空」，统计步数/耗时/token。
+内置**企业级评测集**（`benchmark/web_tasks.json`）：**21 个任务、7 类企业场景**（学术 / 社区 / 电商 / 招聘 / 房产 / 本地生活 / 舆情），每个任务带**数据质量校验规则（validator）**——非空 / 正则 / 数值范围 / 枚举 / 包含关键词。
+
+评测指标：成功率、字段完整率、**数据质量（validator 通过率）**、步数 / 耗时（含 P95）/ token 成本，并按分类汇总。
 
 ```bash
-python -m app.eval               # 全部
-python -m app.eval --limit 2     # 快速验证
+python -m app.eval                        # 跑全部 21 条
+python -m app.eval --category 学术          # 只跑某分类（低反爬可实测）
+python -m app.eval --id arxiv_cs_ai       # 只跑某任务
+python -m app.eval --report eval_report.json   # 输出 JSON 报告
 ```
 
-实测（DeepSeek deepseek-chat，DOM 文本模式，5 条 arXiv 列表页）：成功率 **5/5 = 100%**，平均 4.4 步 / 45.0s / ~82k token。
+> 学术（arXiv）/ 社区（HN、维基百科）类为低反爬站点，可直接实测；电商（亚马逊/京东/淘宝）/ 招聘（BOSS/拉勾）/ 房产（链家/贝壳）/ 本地生活（大众点评）/ 舆情（微博/知乎）类为业务模板——反爬较强，需接入企业数据源（或平台数据适配层 MediaCrawler）后运行，validator 规则即企业数据质量标准。
+
+实测（DeepSeek deepseek-chat，DOM 文本模式，学术类 arXiv 列表页）：
+
+| 指标 | 数值 |
+|------|------|
+| 成功率 | 5/5 = **100%** |
+| 字段完整率 | 100% |
+| 平均步数 | 4.4 |
+| 平均耗时 | 45.0s |
+| 平均 token | ~82k / 任务 |
 
 ---
 

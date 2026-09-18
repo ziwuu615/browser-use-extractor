@@ -1,37 +1,244 @@
-[
-  {
-    "id": "arxiv_cs_ai",
-    "name": "arXiv cs.AI 近期列表",
-    "url": "https://arxiv.org/list/cs.AI/recent",
-    "fields": ["title", "authors"],
-    "min_items": 10
-  },
-  {
-    "id": "arxiv_cs_cl",
-    "name": "arXiv cs.CL 近期列表",
-    "url": "https://arxiv.org/list/cs.CL/recent",
-    "fields": ["title", "authors"],
-    "min_items": 10
-  },
-  {
-    "id": "arxiv_cs_lg",
-    "name": "arXiv cs.LG 近期列表",
-    "url": "https://arxiv.org/list/cs.LG/recent",
-    "fields": ["title", "authors"],
-    "min_items": 10
-  },
-  {
-    "id": "arxiv_stat_ml",
-    "name": "arXiv stat.ML 近期列表",
-    "url": "https://arxiv.org/list/stat.ML/recent",
-    "fields": ["title", "authors"],
-    "min_items": 10
-  },
-  {
-    "id": "arxiv_cs_cv",
-    "name": "arXiv cs.CV 近期列表",
-    "url": "https://arxiv.org/list/cs.CV/recent",
-    "fields": ["title", "authors"],
-    "min_items": 10
-  }
-]
+{
+  "name": "企业级网页数据采集评测集",
+  "version": 2,
+  "description": "覆盖 7 类企业场景共 21 个任务，每个任务带数据质量校验规则（validators）。学术/社区类低反爬、可直接实测；电商/招聘/房产/本地生活/舆情类为业务模板（需接入企业数据源或经反爬处理）。",
+  "tasks": [
+    {
+      "id": "arxiv_cs_ai",
+      "name": "arXiv cs.AI 近期列表",
+      "category": "学术",
+      "url": "https://arxiv.org/list/cs.AI/recent",
+      "fields": ["title", "authors"],
+      "min_items": 10,
+      "validators": {"title": {"type": "non_empty"}, "authors": {"type": "non_empty"}}
+    },
+    {
+      "id": "arxiv_cs_cl",
+      "name": "arXiv cs.CL 近期列表",
+      "category": "学术",
+      "url": "https://arxiv.org/list/cs.CL/recent",
+      "fields": ["title", "authors"],
+      "min_items": 10,
+      "validators": {"title": {"type": "non_empty"}, "authors": {"type": "non_empty"}}
+    },
+    {
+      "id": "arxiv_cs_lg",
+      "name": "arXiv cs.LG 近期列表",
+      "category": "学术",
+      "url": "https://arxiv.org/list/cs.LG/recent",
+      "fields": ["title", "authors"],
+      "min_items": 10,
+      "validators": {"title": {"type": "non_empty"}, "authors": {"type": "non_empty"}}
+    },
+    {
+      "id": "arxiv_stat_ml",
+      "name": "arXiv stat.ML 近期列表",
+      "category": "学术",
+      "url": "https://arxiv.org/list/stat.ML/recent",
+      "fields": ["title", "authors"],
+      "min_items": 10,
+      "validators": {"title": {"type": "non_empty"}, "authors": {"type": "non_empty"}}
+    },
+    {
+      "id": "arxiv_cs_cv",
+      "name": "arXiv cs.CV 近期列表",
+      "category": "学术",
+      "url": "https://arxiv.org/list/cs.CV/recent",
+      "fields": ["title", "authors"],
+      "min_items": 10,
+      "validators": {"title": {"type": "non_empty"}, "authors": {"type": "non_empty"}}
+    },
+    {
+      "id": "arxiv_abs_detail",
+      "name": "arXiv 论文详情页",
+      "category": "学术",
+      "url": "https://arxiv.org/abs/2401.12345",
+      "fields": ["title", "authors", "abstract"],
+      "min_items": 1,
+      "validators": {"title": {"type": "non_empty"}, "authors": {"type": "non_empty"}, "abstract": {"type": "contains", "values": ["model", "method", "training", "data"]}}
+    },
+    {
+      "id": "news_hn",
+      "name": "Hacker News 首页",
+      "category": "社区",
+      "url": "https://news.ycombinator.com/",
+      "fields": ["title", "points"],
+      "min_items": 15,
+      "validators": {"title": {"type": "non_empty"}, "points": {"type": "regex", "pattern": "\\d+"}}
+    },
+    {
+      "id": "news_wiki_langs",
+      "name": "维基百科编程语言列表",
+      "category": "社区",
+      "url": "https://en.wikipedia.org/wiki/List_of_programming_languages",
+      "fields": ["name", "year"],
+      "min_items": 20,
+      "validators": {"name": {"type": "non_empty"}, "year": {"type": "regex", "pattern": "\\d{4}"}}
+    },
+    {
+      "id": "news_wiki_countries",
+      "name": "维基百科国家与首都",
+      "category": "社区",
+      "url": "https://en.wikipedia.org/wiki/List_of_sovereign_states",
+      "fields": ["country", "capital"],
+      "min_items": 20,
+      "validators": {"country": {"type": "non_empty"}, "capital": {"type": "non_empty"}}
+    },
+    {
+      "id": "ecom_amazon_list",
+      "name": "亚马逊商品搜索·蓝牙耳机",
+      "category": "电商",
+      "url": "https://www.amazon.com/s?k=wireless+earbuds",
+      "fields": ["title", "price", "rating"],
+      "min_items": 10,
+      "validators": {
+        "title": {"type": "non_empty"},
+        "price": {"type": "regex", "pattern": "\\d+(\\.\\d{1,2})?", "description": "价格需为数字"},
+        "rating": {"type": "range", "min": 0, "max": 5, "description": "评分 0-5"}
+      }
+    },
+    {
+      "id": "ecom_amazon_detail",
+      "name": "亚马逊商品详情页",
+      "category": "电商",
+      "url": "https://www.amazon.com/dp/B08N5WRWNW",
+      "fields": ["title", "price", "brand", "rating"],
+      "min_items": 1,
+      "validators": {
+        "title": {"type": "non_empty"},
+        "price": {"type": "regex", "pattern": "\\d+(\\.\\d{1,2})?"},
+        "brand": {"type": "non_empty"},
+        "rating": {"type": "range", "min": 0, "max": 5}
+      }
+    },
+    {
+      "id": "ecom_jd_list",
+      "name": "京东商品搜索·笔记本",
+      "category": "电商",
+      "url": "https://search.jd.com/Search?keyword=%E7%AC%94%E8%AE%B0%E6%9C%AC",
+      "fields": ["title", "price", "comment_count"],
+      "min_items": 10,
+      "validators": {
+        "title": {"type": "non_empty"},
+        "price": {"type": "regex", "pattern": "\\d+(\\.\\d{1,2})?"},
+        "comment_count": {"type": "regex", "pattern": "\\d+"}
+      }
+    },
+    {
+      "id": "ecom_taobao_list",
+      "name": "淘宝商品搜索·蓝牙耳机",
+      "category": "电商",
+      "url": "https://s.taobao.com/search?q=%E8%93%9D%E7%89%99%E8%80%B3%E6%9C%BA",
+      "fields": ["title", "price", "sales"],
+      "min_items": 10,
+      "validators": {
+        "title": {"type": "non_empty"},
+        "price": {"type": "regex", "pattern": "\\d+(\\.\\d{1,2})?"},
+        "sales": {"type": "regex", "pattern": "\\d+"}
+      }
+    },
+    {
+      "id": "job_boss_list",
+      "name": "BOSS直聘职位搜索·后端",
+      "category": "招聘",
+      "url": "https://www.zhipin.com/web/geek/job?query=%E5%90%8E%E7%AB%AF&city=101010100",
+      "fields": ["title", "salary", "company"],
+      "min_items": 10,
+      "validators": {
+        "title": {"type": "non_empty"},
+        "salary": {"type": "regex", "pattern": "\\d+[kK]", "description": "薪资含数字+单位 k"},
+        "company": {"type": "non_empty"}
+      }
+    },
+    {
+      "id": "job_lagou_list",
+      "name": "拉勾职位搜索·Python",
+      "category": "招聘",
+      "url": "https://www.lagou.com/wn/zhaopin?kd=python",
+      "fields": ["title", "salary", "experience"],
+      "min_items": 10,
+      "validators": {
+        "title": {"type": "non_empty"},
+        "salary": {"type": "regex", "pattern": "\\d+[kK]"},
+        "experience": {"type": "contains", "values": ["年", "经验", "应届"]}
+      }
+    },
+    {
+      "id": "job_company_careers",
+      "name": "企业招聘官网",
+      "category": "招聘",
+      "url": "https://careers.tencent.com/",
+      "fields": ["title", "department", "location"],
+      "min_items": 5,
+      "validators": {
+        "title": {"type": "non_empty"},
+        "department": {"type": "non_empty"},
+        "location": {"type": "contains", "values": ["市", "区", "省"]}
+      }
+    },
+    {
+      "id": "house_lianjia",
+      "name": "链家二手房列表",
+      "category": "房产",
+      "url": "https://sh.lianjia.com/ershoufang/",
+      "fields": ["title", "total_price", "unit_price", "area"],
+      "min_items": 10,
+      "validators": {
+        "title": {"type": "non_empty"},
+        "total_price": {"type": "regex", "pattern": "\\d+(\\.\\d+)?", "description": "总价数字"},
+        "unit_price": {"type": "regex", "pattern": "\\d+"},
+        "area": {"type": "regex", "pattern": "\\d+(\\.\\d+)?"}
+      }
+    },
+    {
+      "id": "house_beike",
+      "name": "贝壳找房列表",
+      "category": "房产",
+      "url": "https://bj.ke.com/ershoufang/",
+      "fields": ["title", "price", "layout"],
+      "min_items": 10,
+      "validators": {
+        "title": {"type": "non_empty"},
+        "price": {"type": "regex", "pattern": "\\d+(\\.\\d+)?"},
+        "layout": {"type": "contains", "values": ["室", "厅", "房"]}
+      }
+    },
+    {
+      "id": "local_dianping",
+      "name": "大众点评商家列表",
+      "category": "本地生活",
+      "url": "https://www.dianping.com/shanghai/ch10",
+      "fields": ["name", "rating", "avg_price"],
+      "min_items": 5,
+      "validators": {
+        "name": {"type": "non_empty"},
+        "rating": {"type": "range", "min": 0, "max": 5},
+        "avg_price": {"type": "regex", "pattern": "\\d+"}
+      }
+    },
+    {
+      "id": "content_weibo_hot",
+      "name": "微博热搜榜",
+      "category": "舆情",
+      "url": "https://s.weibo.com/top/summary",
+      "fields": ["title", "heat"],
+      "min_items": 10,
+      "validators": {
+        "title": {"type": "non_empty"},
+        "heat": {"type": "regex", "pattern": "\\d+"}
+      }
+    },
+    {
+      "id": "content_zhihu_hot",
+      "name": "知乎热榜",
+      "category": "舆情",
+      "url": "https://www.zhihu.com/hot",
+      "fields": ["title", "heat"],
+      "min_items": 10,
+      "validators": {
+        "title": {"type": "non_empty"},
+        "heat": {"type": "regex", "pattern": "\\d+"}
+      }
+    }
+  ]
+}
